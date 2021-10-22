@@ -29,6 +29,10 @@ contract MyEpicNFT is ERC721URIStorage {
   string[] secondWords = ["RED", "PILL", "WHITE", "RABBIT", "NEBUCHADNEZZAR", "SECRET"];
   string[] thirdWords = ["THE", "ORACLE", "CYPHER", "WIRE", "FU", "RELOADED"];
 
+  event NewEpicNFTMinted(address sender, uint256 tokenId);
+
+
+
   // We need to pass the name of our NFTs token and it's symbol.
   constructor() ERC721 ("MatrixNFT", "ORACLE") {
     console.log("This is my NFT contract. Woah!");
@@ -62,7 +66,6 @@ contract MyEpicNFT is ERC721URIStorage {
   function makeAnEpicNFT() public {
      // Get the current tokenId, this starts at 0.
     uint256 newItemId = _tokenIds.current();
-    
     // We go and randomly grab one word from each of the three arrays.
     string memory first = pickRandomFirstWord(newItemId);
     string memory second = pickRandomSecondWord(newItemId);
@@ -71,7 +74,7 @@ contract MyEpicNFT is ERC721URIStorage {
 
 
     // I concatenate it all together, and then close the <text> and <svg> tags.
-    string memory finalSvg = string(abi.encodePacked(baseSvg, combinedWord, "</text></svg>"));
+    string memory finalSvg = string(abi.encodePacked(baseSvg, first, second, third, "</text></svg>"));
     console.log("\n--------------------");
     console.log(finalSvg);
     console.log("--------------------\n");
@@ -109,9 +112,12 @@ contract MyEpicNFT is ERC721URIStorage {
     // Update your URI!!!
     _setTokenURI(newItemId, finalTokenUri);
     console.log("An NFT w/ ID %s has been minted to %s", newItemId, msg.sender);
-
+  
     // Increment the counter for when the next NFT is minted.
     _tokenIds.increment();
+
+
     console.log("An NFT w/ ID %s has been minted to %s", newItemId, msg.sender);
+    emit NewEpicNFTMinted(msg.sender, newItemId);
   }
 }
